@@ -1,24 +1,35 @@
-import logo from './logo.svg';
+import { useEffect, useState } from 'react';
 import './App.css';
+import { Header } from './components/Header';
+import { Form } from './components/Form';
+import { ListadoPacientes } from './components/ListadoPacientes';
 
 function App() {
+
+  const [pacientes, setpacientes] = useState( JSON.parse(localStorage.getItem('pacientes')) ?? [] );
+  const [paciente, setpaciente] = useState({});
+
+  useEffect(() => {
+    localStorage.setItem('pacientes', JSON.stringify(pacientes));
+    // return () => {}
+  }, [pacientes]);
+  
+
+  const eliminarPaciente = (id) => {
+    const pacientesActualizados = pacientes.filter( paciente => paciente.id !== id );
+    setpacientes(pacientesActualizados);
+  }
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+      <div className='container mx-auto'>
+        <Header />
+        <div className='mt-12 md:flex'>
+          <Form pacientes = { pacientes } setpacientes = { setpacientes } paciente = { paciente } setpaciente = { setpaciente } />
+          <ListadoPacientes pacientes = { pacientes } setpaciente = { setpaciente } eliminarPaciente = { eliminarPaciente } />
+        </div>
+      </div>
+    </>
   );
 }
 
